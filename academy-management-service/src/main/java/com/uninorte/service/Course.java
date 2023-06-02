@@ -7,29 +7,34 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.TableGenerator;
 
 @Entity
 public class Course {
-	 
-	@Id 
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Long  id_course;
-	
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.TABLE, generator = "course_generator")
+	@TableGenerator(
+			name = "course_generator", table = "id_generator", 
+			pkColumnName = "gen_name", valueColumnName = "gen_value", 
+			pkColumnValue = "id_course", allocationSize = 1)
+	private Long id_course;
+
 	@Column(nullable = false)
 	private String name;
-	
+
 	@Column(nullable = false)
 	private Long credits;
-	
+
 	@Column(nullable = false)
 	private Long spaces;
-	
+
 	@ManyToOne
-    @JoinColumn(name = "id_prerequisite")
-    private Course pre_requisite;
-	
+	@JoinColumn(name = "id_prerequisite")
+	private Course pre_requisite;
+
 	public Course() {
-		
+
 	}
 
 	public Course(Long id_course, String name, Long credits, Long spaces, Course pre_requisite) {
@@ -80,5 +85,5 @@ public class Course {
 	public void setPrerequisite(Course pre_requisite) {
 		this.pre_requisite = pre_requisite;
 	}
-	
+
 }

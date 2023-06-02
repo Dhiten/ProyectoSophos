@@ -1,0 +1,628 @@
+openapi: 3.0.1
+info:
+  title: School Management API
+  version: v1
+servers:
+  - url: http://localhost:8200
+    description: Generated server url
+paths:
+  /integration/teacher/create:
+    post:
+      tags:
+        - Teacher
+      summary: Register new teacher
+      operationId: createTeacher
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Teacher'
+        required: true
+      responses:
+        '201':
+          description: Teacher successfully registered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Teacher'
+  /integration/student/create:
+    post:
+      tags:
+        - Student
+      summary: Register new student
+      operationId: createStudent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Student'
+        required: true
+      responses:
+        '201':
+          description: Student successfully registered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+  /integration/course/create:
+    post:
+      tags:
+        - Course
+      summary: Register new course
+      operationId: createCourse
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Course'
+        required: true
+      responses:
+        '201':
+          description: Course successfully registered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+  /integration/teacher/{teacher_id}/assign/{course_id}:
+    get:
+      tags:
+        - Teacher
+      summary: Assign teacher to course
+      operationId: enrollStudent2
+      parameters:
+        - name: teacher_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: course_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Teacher assigned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Teacher'
+        '404':
+          description: Resource not found.
+          content:
+            text/plain:
+              schema:
+                type: string
+  /integration/teacher/get/{teacher_id}:
+    get:
+      tags:
+        - Teacher
+      summary: Retrieve teacher
+      operationId: getTeacher
+      parameters:
+        - name: teacher_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Teacher retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Teacher'
+        '404':
+          description: Teacher not found.
+          content:
+            text/plain:
+              schema:
+                type: string
+  /integration/teacher/get/name/{name}:
+    get:
+      tags:
+        - Teacher
+      summary: Retrieve teacher list that matches the given name
+      operationId: getByName3
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Teacher list obtained.
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Teacher'
+  /integration/teacher/get/all:
+    get:
+      tags:
+        - Teacher
+      summary: Retrieve teacher list
+      operationId: getAllTeachers
+      responses:
+        '200':
+          description: Teacher list obtained.
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Teacher'
+  /integration/student/{student_id}/enroll/{course_id}:
+    get:
+      tags:
+        - Student
+      summary: Enroll student
+      operationId: enrollStudent
+      parameters:
+        - name: student_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: course_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Student enrolled.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+        '404':
+          description: Resource not found.
+          content:
+            text/plain:
+              schema:
+                type: string
+  /integration/student/get/{student_id}:
+    get:
+      tags:
+        - Student
+      summary: Retrieve student
+      operationId: getStudent
+      parameters:
+        - name: student_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Student retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+        '404':
+          description: Student not found.
+          content:
+            text/plain:
+              schema:
+                type: string
+  /integration/student/get/name/{name}:
+    get:
+      tags:
+        - Student
+      summary: Retrieve student list that matches the given name
+      operationId: getByName
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Student list obtained.
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Student'
+  /integration/student/get/faculty/{faculty}:
+    get:
+      tags:
+        - Student
+      summary: Retrieve student list that matches the given faculty
+      operationId: getByFaculty
+      parameters:
+        - name: faculty
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Student list obtained.
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Student'
+  /integration/student/get/detail/{student_id}:
+    get:
+      tags:
+        - Student
+      summary: Retrieve student detail
+      operationId: getStudentDetail
+      parameters:
+        - name: student_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Student retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentDetail'
+        '404':
+          description: Student not found.
+          content:
+            text/plain:
+              schema:
+                type: string
+  /integration/student/get/all:
+    get:
+      tags:
+        - Student
+      summary: Retrieve student list
+      operationId: getAllStudents
+      responses:
+        '200':
+          description: Student list obtained.
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Student'
+  /integration/course/get/{course_id}:
+    get:
+      tags:
+        - Course
+      summary: Retrieve course
+      operationId: getCourse
+      parameters:
+        - name: course_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Course retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        '404':
+          description: Course not found.
+          content:
+            text/plain:
+              schema:
+                type: string
+  /integration/course/get/unavailable/:
+    get:
+      tags:
+        - Course
+      summary: Retrieve course list that doesnt have space
+      operationId: getNotAvailable
+      responses:
+        '200':
+          description: Course list obtained.
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
+  /integration/course/get/name/{name}:
+    get:
+      tags:
+        - Course
+      summary: Retrieve course list that matches the given name
+      operationId: getByName2
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Course list obtained.
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
+  /integration/course/get/detail/{course_id}:
+    get:
+      tags:
+        - Course
+      summary: Retrieve course detailed information
+      operationId: getAllCoursesWithInfo
+      parameters:
+        - name: course_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Course retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseInfo'
+        '404':
+          description: Course not found.
+          content:
+            text/plain:
+              schema:
+                type: string
+  /integration/course/get/available/:
+    get:
+      tags:
+        - Course
+      summary: Retrieve course list that have space
+      operationId: getAvailable
+      responses:
+        '200':
+          description: Course list obtained.
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
+  /integration/course/get/all:
+    get:
+      tags:
+        - Course
+      summary: Retrieve course list
+      operationId: getAllCourses
+      responses:
+        '200':
+          description: Course list obtained.
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
+  /integration/course/approve/{enrollment_id}:
+    get:
+      tags:
+        - Course
+      summary: Approve student course
+      operationId: approveStudent
+      parameters:
+        - name: enrollment_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Course approved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Enrollment'
+        '404':
+          description: Enrollment not found.
+          content:
+            text/plain:
+              schema:
+                type: string
+  /integration/teacher/delete:
+    delete:
+      tags:
+        - Teacher
+      summary: Delete student
+      operationId: deleteTeacher
+      parameters:
+        - name: teacher_id
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Teacher deleted.
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Teacher'
+  /integration/student/delete:
+    delete:
+      tags:
+        - Student
+      summary: Delete student
+      operationId: deleteStudent
+      parameters:
+        - name: student_id
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Student deleted.
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Student'
+  /integration/course/delete:
+    delete:
+      tags:
+        - Course
+      summary: Delete student
+      operationId: deleteCourse
+      parameters:
+        - name: course_id
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Course deleted.
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
+components:
+  schemas:
+    Course:
+      type: object
+      properties:
+        id_course:
+          type: integer
+          format: int64
+        name:
+          type: string
+        credits:
+          type: integer
+          format: int64
+        spaces:
+          type: integer
+          format: int64
+        prerequisite:
+          $ref: '#/components/schemas/Course'
+    Teacher:
+      type: object
+      properties:
+        id_teacher:
+          type: integer
+          format: int64
+        name:
+          type: string
+        experience_years:
+          type: integer
+          format: int32
+        title:
+          type: string
+        courses:
+          type: array
+          items:
+            $ref: '#/components/schemas/Course'
+    Student:
+      type: object
+      properties:
+        id_student:
+          type: integer
+          format: int64
+        name:
+          type: string
+        credits:
+          type: integer
+          format: int32
+        faculty:
+          type: string
+        semester:
+          type: integer
+          format: int32
+        courses:
+          type: array
+          items:
+            $ref: '#/components/schemas/Course'
+    StudentDetail:
+      type: object
+      properties:
+        id_student:
+          type: integer
+          format: int64
+        name:
+          type: string
+        credits:
+          type: integer
+          format: int32
+        faculty:
+          type: string
+        semester:
+          type: integer
+          format: int32
+        approvedCourses:
+          type: array
+          items:
+            $ref: '#/components/schemas/Course'
+        currentCourses:
+          type: array
+          items:
+            $ref: '#/components/schemas/Course'
+    CourseInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        credits:
+          type: integer
+          format: int64
+        spaces:
+          type: integer
+          format: int64
+        enrollmentCount:
+          type: integer
+          format: int32
+        preRequisite:
+          $ref: '#/components/schemas/Course'
+        teachers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Teacher'
+        students:
+          type: array
+          items:
+            $ref: '#/components/schemas/Student'
+    Enrollment:
+      type: object
+      properties:
+        id_enrollment:
+          type: integer
+          format: int64
+        id_student:
+          $ref: '#/components/schemas/Student'
+        id_course:
+          $ref: '#/components/schemas/Course'
+        approved:
+          type: boolean

@@ -9,12 +9,17 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.TableGenerator;
 
 @Entity
 public class Enrollment {
 
-	@Id 
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Id
+	@GeneratedValue(strategy = GenerationType.TABLE, generator = "enrollment_generator")
+	@TableGenerator(
+			name = "enrollment_generator", table = "id_generator", 
+			pkColumnName = "gen_name", valueColumnName = "gen_value", 
+			pkColumnValue = "id_enrollment", allocationSize = 1)
 	private Long  id_enrollment;
 	
     @ManyToOne

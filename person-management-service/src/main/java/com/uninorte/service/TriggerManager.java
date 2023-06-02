@@ -1,13 +1,22 @@
 package com.uninorte.service;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ResourceLoaderAware;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TriggerManager {
+public class TriggerManager implements ResourceLoaderAware {
 
 	private final JdbcTemplate jdbcTemplate;
+	
+	private ResourceLoader resourceLoader;
 
 	@Autowired
 	public TriggerManager(JdbcTemplate jdbcTemplate) {
@@ -103,5 +112,32 @@ public class TriggerManager {
 				END
 				""";
 		jdbcTemplate.execute(triggerSQL);
+		
+		String checkIfExistsQuery = "SELECT COUNT(*) FROM enrollment;";
+		int count = jdbcTemplate.queryForObject(checkIfExistsQuery, Integer.class);
+		if (count == 0) {
+			Resource resource = resourceLoader.getResource("file:/app/populate.sql");
+		    try (InputStream inputStream = resource.getInputStream()) {
+		        byte[] bytes = inputStream.readAllBytes();
+		        String populateSQL = new String(bytes, StandardCharsets.ISO_8859_1);
+
+		        String[] sqlStatements = populateSQL.split(";");
+
+		        for (String sqlStatement : sqlStatements) {
+		            if (!sqlStatement.trim().isEmpty()) {
+		                jdbcTemplate.execute(sqlStatement);
+		            }
+		        }
+		    } catch (IOException e) {
+		        // Handle IO exception
+		    }
+		}
+	}
+	
+
+	@Override
+	public void setResourceLoader(ResourceLoader resourceLoader) {
+		this.resourceLoader = resourceLoader;
+		
 	}
 }

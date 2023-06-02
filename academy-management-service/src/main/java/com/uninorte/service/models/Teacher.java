@@ -12,13 +12,18 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.TableGenerator;
 
 @Entity
 public class Teacher {
 	 
-	@Id 
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Integer id_teacher;
+	@Id
+	@GeneratedValue(strategy = GenerationType.TABLE, generator = "teacher_generator")
+	@TableGenerator(
+			name = "teacher_generator", table = "id_generator", 
+			pkColumnName = "gen_name", valueColumnName = "gen_value", 
+			pkColumnValue = "id_teacher", allocationSize = 1)
+	private Long id_teacher;
 	
 	@Column(nullable =  false)
 	private String name;
@@ -39,7 +44,7 @@ public class Teacher {
 		
 	}
 
-	public Teacher(Integer id_teacher, String name, Integer experience_years, String title) {
+	public Teacher(Long id_teacher, String name, Integer experience_years, String title) {
 		super();
 		this.id_teacher = id_teacher;
 		this.name = name;
@@ -47,11 +52,11 @@ public class Teacher {
 		this.title = title;
 	}
 
-	public Integer getId_teacher() {
+	public Long getId_teacher() {
 		return id_teacher;
 	}
 
-	public void setId_teacher(Integer id_teacher) {
+	public void setId_teacher(Long id_teacher) {
 		this.id_teacher = id_teacher;
 	}
 

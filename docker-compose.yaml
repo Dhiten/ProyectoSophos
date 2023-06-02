@@ -1,0 +1,78 @@
+version: '3.9'
+
+services: 
+  database:
+    image:  mysql:8-oracle
+    mem_limit: 700m
+    ports:
+      - "3306:3306"
+    networks:
+      - academy-management-service-network
+    environment:
+      MYSQL_ROOT_PASSWORD: 'rootpassword' 
+      MYSQL_DATABASE: 'services'
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      
+  load-balancer-service:
+    image:  dhith/sophos-load-balancer-service:1.0.0
+    mem_limit: 700m
+    ports:
+      - "8761:8761"
+    networks:
+      - academy-management-service-network
+    depends_on:
+      - database
+    environment:
+      JAVA_TOOL_OPTIONS: -Djava.version=19
+      
+  integration-service:
+    image:  dhith/sophos-integration-service:1.0.0
+    mem_limit: 700m
+    ports:
+      - "8200:8200"
+    networks:
+      - academy-management-service-network
+    depends_on:
+      - load-balancer-service
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://load-balancer-service:8761/eureka
+      JAVA_TOOL_OPTIONS: -Djava.version=19
+   
+  course-management-service:
+    image:  dhith/sophos-course-management-service:1.0.0
+    mem_limit: 700m
+    ports:
+      - "8020:8020"
+    networks:
+      - academy-management-service-network
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://load-balancer-service:8761/eureka
+      JAVA_TOOL_OPTIONS: -Djava.version=19
+      SPRING.DATASOURCE.URL : jdbc:mysql://database:3306/services
+   
+  person-management-service:
+    image:  dhith/sophos-person-management-service:1.0.0
+    mem_limit: 700m
+    ports:
+      - "8000:8000"
+    networks:
+      - academy-management-service-network
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://load-balancer-service:8761/eureka
+      JAVA_TOOL_OPTIONS: -Djava.version=19
+      SPRING.DATASOURCE.URL : jdbc:mysql://database:3306/services
+    volumes:
+      - ./populate.sql:/app/populate.sql
+
+networks:
+  academy-management-service-network:

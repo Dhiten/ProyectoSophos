@@ -263,7 +263,7 @@ insert into enrollment (id_enrollment, id_student, id_course, approved) values (
 insert into enrollment (id_enrollment, id_student, id_course, approved) values (110, 10, 27, true);
 insert into enrollment (id_enrollment, id_student, id_course, approved) values (111, 11, 34, false);
 insert into enrollment (id_enrollment, id_student, id_course, approved) values (112, 12, 32, false);
-insert into enrollment (id_enrollment, id_student, id_course, approved) values (113, 13, 8, true);
+insert into enrollment (id_enrollment, id_student, id_course, approved) values (113, 13, 2, true);
 insert into enrollment (id_enrollment, id_student, id_course, approved) values (114, 14, 5, true);
 insert into enrollment (id_enrollment, id_student, id_course, approved) values (115, 15, 25, false);
 insert into enrollment (id_enrollment, id_student, id_course, approved) values (116, 16, 26, false);
@@ -423,3 +423,5 @@ insert into teach (id_course, id_teacher) values (21, 39);
 insert into teach (id_course, id_teacher) values (30, 4);
 insert into teach (id_course, id_teacher) values (28, 30);
 
+UPDATE id_generator SET gen_value = 51 WHERE gen_name IN ('id_course','id_student','id_teacher');
+UPDATE id_generator SET gen_value = 151 WHERE gen_name NOT IN ('id_course','id_student','id_teacher');

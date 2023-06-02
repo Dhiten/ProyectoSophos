@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.uninorte.service</groupId>
-	<artifactId>academy-management-service</artifactId>
+	<artifactId>course-management-service</artifactId>
 	<version>1.0.0</version>
-	<name>academy-management-service</name>
+	<name>course-management-service</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>19</java.version>

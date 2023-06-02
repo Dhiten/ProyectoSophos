@@ -33,50 +33,39 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Academy service")
 @RequestMapping("/course")
 public class CourseController {
-	
+
 	@Autowired
 	private CourseRepository repository;
 
-    @Autowired
-    private StudentRepository studentRepository;
-    
-    @Autowired
-    private TeacherRepository teacherRepository;
-	
+	@Autowired
+	private StudentRepository studentRepository;
+
+	@Autowired
+	private TeacherRepository teacherRepository;
+
+	@Autowired
+	private EnrollmentRepository enrollmentRepository;
+
 	public CourseController() {
 		super();
 	}
-	
+
 	@CrossOrigin(origins = "*")
-	@Operation(summary="Retrieve course list")
-	@ApiResponses(value= {
-			@ApiResponse(
-					responseCode="200", 
-					description="Course list obtained.",
-					content = @Content(array = @ArraySchema(schema = @Schema(implementation = Course.class)))
-					)
-			})
+	@Operation(summary = "Retrieve course list")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Course list obtained.", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Course.class)))) })
 	@GetMapping(path = "/get/all")
-	public List<Course> getAllCourses(){
+	public List<Course> getAllCourses() {
 		return repository.findAll();
 	}
-	
+
 	@CrossOrigin(origins = "*")
 	@Operation(summary = "Retrieve course")
 	@ApiResponses(value = {
-			@ApiResponse(
-					responseCode = "200", 
-					description = "Course retrieved.", 
-					content = @Content(mediaType = "application/json", schema = @Schema(implementation = Course.class))
-					),
-			@ApiResponse(
-					responseCode = "404", 
-					description = "Course not found.",
-					content = @Content(mediaType = "text/plain", schema = @Schema(type ="string"))
-					) 
-			})
+			@ApiResponse(responseCode = "200", description = "Course retrieved.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Course.class))),
+			@ApiResponse(responseCode = "404", description = "Course not found.", content = @Content(mediaType = "text/plain", schema = @Schema(type = "string"))) })
 	@GetMapping(path = "/get/{course_id}")
-	public ResponseEntity<Object> getCourse(@PathVariable int course_id){		
+	public ResponseEntity<Object> getCourse(@PathVariable int course_id) {
 		try {
 			Course course = repository.findById(course_id).get();
 			return ResponseEntity.ok(course);
@@ -84,95 +73,61 @@ public class CourseController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course with asociated id not found.");
 		}
 	}
-	
+
 	@CrossOrigin(origins = "*")
 	@Operation(summary = "Register new course")
-	@ApiResponses(value = { 
-			@ApiResponse(
-					responseCode = "201", 
-					description = "Course successfully registered.",
-					content = @Content(mediaType = "application/json", schema = @Schema(implementation = Course.class))
-					)
-			})
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "201", description = "Course successfully registered.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Course.class))) })
 	@PostMapping(path = "/create")
-	public ResponseEntity<Course> createCourse(@RequestBody Course newCourse){
+	public ResponseEntity<Course> createCourse(@RequestBody Course newCourse) {
 		Course course = repository.saveAndFlush(newCourse);
 		return ResponseEntity.status(HttpStatus.CREATED).body(course);
 	}
-	
+
 	@CrossOrigin(origins = "*")
 	@Operation(summary = "Delete student")
-	@ApiResponses(value = { 
-			@ApiResponse(
-					responseCode = "200", 
-					description = "Course deleted.",
-					content = @Content(array = @ArraySchema(schema = @Schema(implementation = Course.class)))
-					) 
-			})
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Course deleted.", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Course.class)))) })
 	@DeleteMapping(path = "/delete")
-	public List<Course> deleteCourse(@RequestParam Integer course_id){
+	public List<Course> deleteCourse(@RequestParam Integer course_id) {
 		repository.deleteById(course_id);
 		return repository.findAll();
 	}
-	
+
 	@CrossOrigin(origins = "*")
-	@Operation(summary="Retrieve course list that matches the given name")
-	@ApiResponses(value= {
-			@ApiResponse(
-					responseCode="200", 
-					description="Course list obtained.",
-					content = @Content(array = @ArraySchema(schema = @Schema(implementation = Course.class)))
-					)
-			})
+	@Operation(summary = "Retrieve course list that matches the given name")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Course list obtained.", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Course.class)))) })
 	@GetMapping(path = "/get/name/{name}")
-	public List<Course> getByName(@PathVariable String name){
+	public List<Course> getByName(@PathVariable String name) {
 		return repository.findByName(name);
 	}
-	
+
 	@CrossOrigin(origins = "*")
-	@Operation(summary="Retrieve course list that have space")
-	@ApiResponses(value= {
-			@ApiResponse(
-					responseCode="200", 
-					description="Course list obtained.",
-					content = @Content(array = @ArraySchema(schema = @Schema(implementation = Course.class)))
-					)
-			})
+	@Operation(summary = "Retrieve course list that have space")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Course list obtained.", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Course.class)))) })
 	@GetMapping(path = "/get/available/")
-	public List<Course> getAvailable(){
+	public List<Course> getAvailable() {
 		return repository.findAvailable();
 	}
-	
+
 	@CrossOrigin(origins = "*")
-	@Operation(summary="Retrieve course list that doesnt have space")
-	@ApiResponses(value= {
-			@ApiResponse(
-					responseCode="200", 
-					description="Course list obtained.",
-					content = @Content(array = @ArraySchema(schema = @Schema(implementation = Course.class)))
-					)
-			})
+	@Operation(summary = "Retrieve course list that doesnt have space")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Course list obtained.", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Course.class)))) })
 	@GetMapping(path = "/get/unavailable/")
-	public List<Course> getNotAvailable(){
+	public List<Course> getNotAvailable() {
 		return repository.findNotAvailable();
 	}
-	
+
 	@CrossOrigin(origins = "*")
 	@Operation(summary = "Retrieve course detailed information")
 	@ApiResponses(value = {
-			@ApiResponse(
-					responseCode = "200", 
-					description = "Course retrieved.", 
-					content = @Content(mediaType = "application/json", schema = @Schema(implementation = CourseInfo.class))
-					),
-			@ApiResponse(
-					responseCode = "404", 
-					description = "Course not found.",
-					content = @Content(mediaType = "text/plain", schema = @Schema(type ="string"))
-					) 
-			})
-    @GetMapping(path = "/get/detail/{course_id}")
-    public ResponseEntity<Object> getAllCoursesWithInfo(@PathVariable Integer course_id) {
+			@ApiResponse(responseCode = "200", description = "Course retrieved.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CourseInfo.class))),
+			@ApiResponse(responseCode = "404", description = "Course not found.", content = @Content(mediaType = "text/plain", schema = @Schema(type = "string"))) })
+	@GetMapping(path = "/get/detail/{course_id}")
+	public ResponseEntity<Object> getAllCoursesWithInfo(@PathVariable Integer course_id) {
 		try {
 			Course course = repository.findById(course_id).get();
 			CourseInfo courseInfo = createCourseInfo(course);
@@ -180,32 +135,49 @@ public class CourseController {
 		} catch (NoSuchElementException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course with asociated id not found.");
 		}
-    }
+	}
 
-    private CourseInfo createCourseInfo(Course course) {
-        CourseInfo courseInfo = new CourseInfo();
-        courseInfo.setId(course.getId_course());
-        courseInfo.setName(course.getName());
-        courseInfo.setCredits(course.getCredits());
-        courseInfo.setSpaces(course.getSpaces());
-        courseInfo.setEnrollmentCount(getEnrollmentCount(course));
-        courseInfo.setPreRequisite(course.getPrerequisite());
-        courseInfo.setTeachers(getTeachersByCourse(course));
-        courseInfo.setStudents(getStudentsByCourse(course));
-        return courseInfo;
-    }
+	@CrossOrigin(origins = "*")
+	@Operation(summary = "Approve student course")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Course approved.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Enrollment.class))),
+			@ApiResponse(responseCode = "404", description = "Enrollment not found.", content = @Content(mediaType = "text/plain", schema = @Schema(type = "string"))) })
+	@GetMapping(path = "/approve/{enrollment_id}")
+	public ResponseEntity<Object> approveStudent(@PathVariable int enrollment_id) {
+		try {
+			Enrollment enrollment = enrollmentRepository.findById(enrollment_id).get();
+			enrollment.setApproved(true);
+			enrollment = enrollmentRepository.save(enrollment);
+			return ResponseEntity.ok(enrollment);
+		} catch (NoSuchElementException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Resource with asociated id not found.");
+		}
+	}
 
-    private int getEnrollmentCount(Course course) {
-        List<Student> students = studentRepository.findByCourses(course);
-        return students.size();
-    }
+	private CourseInfo createCourseInfo(Course course) {
+		CourseInfo courseInfo = new CourseInfo();
+		courseInfo.setId(course.getId_course());
+		courseInfo.setName(course.getName());
+		courseInfo.setCredits(course.getCredits());
+		courseInfo.setSpaces(course.getSpaces());
+		courseInfo.setEnrollmentCount(getEnrollmentCount(course));
+		courseInfo.setPreRequisite(course.getPrerequisite());
+		courseInfo.setTeachers(getTeachersByCourse(course));
+		courseInfo.setStudents(getStudentsByCourse(course));
+		return courseInfo;
+	}
 
-    private List<Teacher> getTeachersByCourse(Course course) {
-        return teacherRepository.findByCourses(course);
-    }
+	private int getEnrollmentCount(Course course) {
+		List<Student> students = studentRepository.findByCourses(course);
+		return students.size();
+	}
 
-    private List<Student> getStudentsByCourse(Course course) {
-        return studentRepository.findByCourses(course);
-    }
+	private List<Teacher> getTeachersByCourse(Course course) {
+		return teacherRepository.findByCourses(course);
+	}
+
+	private List<Student> getStudentsByCourse(Course course) {
+		return studentRepository.findByCourses(course);
+	}
 
 }

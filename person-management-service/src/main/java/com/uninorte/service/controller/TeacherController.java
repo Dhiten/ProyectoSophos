@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.uninorte.service.Teacher;
+import com.uninorte.service.models.Course;
+import com.uninorte.service.repository.CourseRepository;
 import com.uninorte.service.repository.TeacherRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,6 +36,9 @@ public class TeacherController {
 	
 	@Autowired
 	private TeacherRepository repository;
+	
+	@Autowired
+	private CourseRepository courseRepository;
 	
 	
 	public TeacherController() {
@@ -118,8 +123,37 @@ public class TeacherController {
 					)
 			})
 	@GetMapping(path = "/get/name/{name}")
-	public List<Teacher> getByName(@PathVariable String name){
+	public List<Teacher> getByName3(@PathVariable String name){
 		return repository.findByName(name);
+	}
+	
+	@CrossOrigin(origins = "*")
+	@Operation(summary = "Assign teacher to course")
+	@ApiResponses(value = {
+			@ApiResponse(
+					responseCode = "200", 
+					description = "Teacher assigned.", 
+					content = @Content(mediaType = "application/json", schema = @Schema(implementation = Teacher.class))
+					),
+			@ApiResponse(
+					responseCode = "404", 
+					description = "Resource not found.",
+					content = @Content(mediaType = "text/plain", schema = @Schema(type ="string"))
+					) 
+			})
+	@GetMapping(path = "/{teacher_id}/assign/{course_id}")
+	public ResponseEntity<Object> enrollStudent2(@PathVariable int teacher_id,@PathVariable int course_id){	
+		try {
+			Teacher teacher = repository.findById(teacher_id).get();
+			Course course = courseRepository.findById(course_id).get();
+			List<Course> teacherCourses = teacher.getCourses();
+			teacherCourses.add(course);
+			teacher.setCourses(teacherCourses);
+			repository.save(teacher);
+			return ResponseEntity.ok(teacher);
+		} catch (NoSuchElementException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Resource with asociated id not found.");
+		}
 	}
 
 }

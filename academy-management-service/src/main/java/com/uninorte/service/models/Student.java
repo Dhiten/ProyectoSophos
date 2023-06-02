@@ -12,12 +12,17 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.TableGenerator;
 
 @Entity
 public class Student {
 	 
-	@Id 
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Id
+	@GeneratedValue(strategy = GenerationType.TABLE, generator = "student_generator")
+	@TableGenerator(
+			name = "student_generator", table = "id_generator", 
+			pkColumnName = "gen_name", valueColumnName = "gen_value", 
+			pkColumnValue = "id_student", allocationSize = 1)
 	private Long  id_student;
 	
 	@Column(nullable=false)
@@ -28,6 +33,9 @@ public class Student {
 	
 	@Column(nullable=false)
 	private String faculty;
+	
+	@Column(nullable= false,columnDefinition = "int default 1")
+	private int semester;
 	
 	@ManyToMany
     @JoinTable(name = "enrollment",
@@ -85,6 +93,14 @@ public class Student {
 
 	public void setCourses(List<Course> courses) {
 		this.courses = courses;
+	}
+
+	public int getSemester() {
+		return semester;
+	}
+
+	public void setSemester(int semester) {
+		this.semester = semester;
 	}
 	
 }
